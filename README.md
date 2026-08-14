@@ -9,9 +9,7 @@ A desktop application for managing a charity fund's donors, donations, projects 
 
 ### Demo / Демо
 
-<video src="https://github.com/dmtenevie/Charity-Fund/raw/main/docs/demo.mp4" controls width="800">
-  Your browser does not support the video tag — <a href="docs/demo.mp4">download the video</a> instead.
-</video>
+📹 **[Watch the screen recording / Дивитись відео-демонстрацію](docs/demo.mp4)** — click through to GitHub's built-in video player.
 
 **[English](#english)** · **[Українська](#українська)**
 
