@@ -25,8 +25,7 @@ CREATE TABLE projects (
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CHECK (goal_amount >= 0),
-    CHECK (current_amount >= 0),
-    CHECK (current_amount <= goal_amount)
+    CHECK (current_amount >= 0)
 );
 
 CREATE TABLE donations (

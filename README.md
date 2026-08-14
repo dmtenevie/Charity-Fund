@@ -7,6 +7,12 @@ A desktop application for managing a charity fund's donors, donations, projects 
 ![Qt6](https://img.shields.io/badge/Qt-6-41cd52.svg)
 ![PostgreSQL](https://img.shields.io/badge/database-PostgreSQL-336791.svg)
 
+### Demo / Демо
+
+<video src="https://github.com/dmtenevie/Charity-Fund/raw/main/docs/demo.mp4" controls width="800">
+  Your browser does not support the video tag — <a href="docs/demo.mp4">download the video</a> instead.
+</video>
+
 **[English](#english)** · **[Українська](#українська)**
 
 ---

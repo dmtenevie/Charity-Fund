@@ -3,6 +3,17 @@
 #include <QSqlError>
 #include <QVariant>
 
+namespace {
+// donors.email is UNIQUE but optional in the UI/model (Donor::isValid()
+// only checks its format when non-empty). Binding "" would make every
+// donor left without an email collide on that empty string once a second
+// one is added — NULL is exempt from the uniqueness check, "" is not.
+QVariant emailOrNull(const std::string& email) {
+    if (email.empty()) return QVariant(QMetaType(QMetaType::QString));
+    return QString::fromStdString(email);
+}
+} // namespace
+
 Repository::Repository() : db_(Database::getInstance()) {}
 
 void Repository::setLastError(const QSqlQuery& query) {
@@ -57,11 +68,11 @@ bool Repository::addDonor(Donor& donor) {
     query.prepare("INSERT INTO donors (name, email, phone, address, notes) "
                   "VALUES (?, ?, ?, ?, ?) RETURNING id");
     query.addBindValue(QString::fromStdString(donor.getName()));
-    query.addBindValue(QString::fromStdString(donor.getEmail()));
+    query.addBindValue(emailOrNull(donor.getEmail()));
     query.addBindValue(QString::fromStdString(donor.getPhone()));
     query.addBindValue(QString::fromStdString(donor.getAddress()));
     query.addBindValue(QString::fromStdString(donor.getNotes()));
-    
+
     if (query.exec() && query.next()) {
         donor.setId(query.value(0).toInt());
         return true;
@@ -74,7 +85,7 @@ bool Repository::updateDonor(const Donor& donor) {
     QSqlQuery query(db_.getConnection());
     query.prepare("UPDATE donors SET name = ?, email = ?, phone = ?, address = ?, notes = ? WHERE id = ?");
     query.addBindValue(QString::fromStdString(donor.getName()));
-    query.addBindValue(QString::fromStdString(donor.getEmail()));
+    query.addBindValue(emailOrNull(donor.getEmail()));
     query.addBindValue(QString::fromStdString(donor.getPhone()));
     query.addBindValue(QString::fromStdString(donor.getAddress()));
     query.addBindValue(QString::fromStdString(donor.getNotes()));

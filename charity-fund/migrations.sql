@@ -18,6 +18,14 @@ CREATE TABLE IF NOT EXISTS donors (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Normalize any pre-existing empty-string emails to NULL. The donors.email
+-- column is UNIQUE but optional, and an empty string is a real (non-NULL)
+-- value as far as that constraint is concerned — so a second donor left
+-- without an email would collide with an earlier '' row and fail to save.
+-- The Repository now binds NULL instead of "" for a blank email going
+-- forward; this just cleans up rows already written the old way.
+UPDATE donors SET email = NULL WHERE email = '';
+
 CREATE TABLE IF NOT EXISTS projects (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -29,9 +37,32 @@ CREATE TABLE IF NOT EXISTS projects (
     status VARCHAR(50) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CHECK (goal_amount >= 0),
-    CHECK (current_amount >= 0),
-    CHECK (current_amount <= goal_amount)
+    CHECK (current_amount >= 0)
 );
+
+-- Projects used to also require current_amount <= goal_amount, but that
+-- rejects perfectly normal over-funding (donors keep giving after a project
+-- hits its goal) and made adding a donation fail outright once a project's
+-- total passed its target. Drop it from any database that still has it from
+-- before this fix — CREATE TABLE IF NOT EXISTS above won't touch an
+-- already-existing projects table, so this has to be done explicitly and by
+-- constraint definition (not by a fixed name), since Postgres auto-names
+-- unnamed CHECK constraints and the exact name depends on table history.
+DO $$
+DECLARE
+    constraint_name TEXT;
+BEGIN
+    SELECT con.conname INTO constraint_name
+    FROM pg_constraint con
+    JOIN pg_class rel ON rel.oid = con.conrelid
+    WHERE rel.relname = 'projects'
+      AND con.contype = 'c'
+      AND pg_get_constraintdef(con.oid) = 'CHECK ((current_amount <= goal_amount))';
+
+    IF constraint_name IS NOT NULL THEN
+        EXECUTE format('ALTER TABLE projects DROP CONSTRAINT %I', constraint_name);
+    END IF;
+END $$;
 
 CREATE TABLE IF NOT EXISTS donations (
     id SERIAL PRIMARY KEY,
