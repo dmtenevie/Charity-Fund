@@ -1,0 +1,17 @@
+{
+  "configurations": [
+    {
+      "name": "windows-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "compileCommands": "${workspaceFolder}/charity-fund/build/compile_commands.json",
+      "compilerPath": "${env:USERPROFILE}/msys64/mingw64/bin/g++.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-gcc-x64",
+      "compilerArgs": []
+    }
+  ],
+  "version": 4
+}
