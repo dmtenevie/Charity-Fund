@@ -18,5 +18,5 @@ CMakeUserPresets.json
 Thumbs.db
 *.user
 
-# Claude Code local session state (contains machine-specific paths/permissions)
+# Local editor/agent session state (contains machine-specific paths/permissions)
 .claude/settings.local.json
