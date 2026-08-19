@@ -9,7 +9,7 @@ A desktop application for managing a charity fund's donors, donations, projects 
 
 ### Demo / Демо
 
-📹 **[Watch the screen recording / Дивитись відео-демонстрацію](docs/demo.mp4)** — click through to GitHub's built-in video player.
+![Demo / Демо](docs/demo.gif)
 
 **[English](#english)** · **[Українська](#українська)**
 
